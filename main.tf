@@ -1,6 +1,15 @@
+terraform {
+  backend "remote" {
+    organization = "TerraformBootCampJimLentzNew"
+
+    workspaces {
+      name = "rds-sql-terraform"
+    }
+  }
+}
+
 provider "aws" {
-  region  = "us-west-2" # You can change this to your desired region
-  profile = "default"   # This is optional if you are using AWS CLI profiles
+  region = "us-west-2" # Change to your desired region
 }
 
 module "vpc" {
