@@ -1,3 +1,8 @@
+provider "aws" {
+  region  = "us-west-2" # You can change this to your desired region
+  profile = "default"   # This is optional if you are using AWS CLI profiles
+}
+
 module "vpc" {
   source = "cloudposse/vpc/aws"
   # Cloud Posse recommends pinning every module to a specific version
