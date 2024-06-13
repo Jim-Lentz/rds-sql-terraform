@@ -11,7 +11,7 @@ terraform {
 provider "aws" {
   region = "us-west-2" # Change to your desired region
 }
-
+# adding comment
 module "vpc" {
   source = "cloudposse/vpc/aws"
   # Cloud Posse recommends pinning every module to a specific version
