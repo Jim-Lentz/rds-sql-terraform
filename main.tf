@@ -1,4 +1,21 @@
 terraform {
+  required_version = "~> 1.8.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.37.0"
+    }
+  }
+  cloud {
+    organization = "TerraformBootCampJimLentzNew"
+    workspaces {
+      name = "rds-sql-terraform"
+    }
+  }
+}
+/*
+terraform {
   backend "remote" {
     organization = "TerraformBootCampJimLentzNew"
 
@@ -11,7 +28,8 @@ terraform {
 provider "aws" {
   region = "us-west-2" # Change to your desired region
 }
-# adding comment
+*/
+
 module "vpc" {
   source = "cloudposse/vpc/aws"
   # Cloud Posse recommends pinning every module to a specific version
