@@ -57,6 +57,7 @@ module "dynamic_subnets" {
   vpc_id             = module.vpc.vpc_id
   igw_id             = [module.vpc.igw_id]
   ipv4_cidr_block    = ["10.0.0.0/16"]
+  nat_gateway_enabled = false
 }
 /*
 module "db" {
