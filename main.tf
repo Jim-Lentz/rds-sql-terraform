@@ -94,7 +94,7 @@ module "db" {
 
   # DB subnet group
   create_db_subnet_group = true
-  subnet_ids             = [module.dynamic_subnets.private[0], module.dynamic_subnets.private[1], module.dynamic_subnets.private[2]]
+  subnet_ids             = [module.dynamic_subnets.private_subnet_ids[0], module.dynamic_subnets.private_subnet_ids[1], module.dynamic_subnets.private_subnet_ids[2]] #[module.dynamic_subnets.private[0], module.dynamic_subnets.private[1], module.dynamic_subnets.private[2]]
 
   # DB parameter group
   family = "mysql5.7"
