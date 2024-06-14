@@ -76,7 +76,7 @@ module "db" {
 
   iam_database_authentication_enabled = true
 
-  vpc_security_group_ids = ["module.vpc.vpc_default_security_group_id"] #[sg-090ba5281c5a9b4db]
+  vpc_security_group_ids = [sg-090ba5281c5a9b4db] #["module.vpc.vpc_default_security_group_id"] #
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
