@@ -1,4 +1,4 @@
-terraform {
+/*terraform {
   required_version = "~> 1.8.0"
 
   required_providers {
@@ -14,7 +14,8 @@ terraform {
     }
   }
 }
-#adding comment. Trying to get terraform cloud to see merge.
+*/
+
 
 /*
 terraform {
