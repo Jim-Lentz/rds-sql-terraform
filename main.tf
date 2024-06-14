@@ -15,19 +15,6 @@ terraform {
   }
 }
 
-
-
-/*
-terraform {
-  backend "remote" {
-    organization = "TerraformBootCampJimLentzNew"
-
-    workspaces {
-      name = "rds-sql-terraform"
-    }
-  }
-}
-*/
 provider "aws" {
   region = "us-west-2" # Change to your desired region
 }
@@ -74,9 +61,11 @@ module "db" {
   username = "user"
   port     = "3306"
 
+  skip_final_snapshot = true
+
   iam_database_authentication_enabled = true
 
-  vpc_security_group_ids = ["sg-090ba5281c5a9b4db"] #["module.vpc.vpc_default_security_group_id"] #
+  vpc_security_group_ids = [module.vpc.vpc_default_security_group_id] #["sg-090ba5281c5a9b4db"]
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
