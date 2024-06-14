@@ -27,11 +27,11 @@ terraform {
     }
   }
 }
-
+*/
 provider "aws" {
   region = "us-west-2" # Change to your desired region
 }
-*/
+
 
 module "vpc" {
   source = "cloudposse/vpc/aws"
