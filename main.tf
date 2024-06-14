@@ -45,7 +45,7 @@ module "vpc" {
 
   assign_generated_ipv6_cidr_block = false
 }
-/*
+
 module "dynamic_subnets" {
   source = "cloudposse/dynamic-subnets/aws"
   # Cloud Posse recommends pinning every module to a specific version
@@ -58,7 +58,7 @@ module "dynamic_subnets" {
   igw_id             = [module.vpc.igw_id]
   ipv4_cidr_block    = "10.0.0.0/16"
 }
-
+/*
 module "db" {
   source = "terraform-aws-modules/rds/aws"
 
