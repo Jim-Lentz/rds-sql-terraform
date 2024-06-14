@@ -59,7 +59,7 @@ module "dynamic_subnets" {
   ipv4_cidr_block    = ["10.0.0.0/16"]
   nat_gateway_enabled = false
 }
-/*
+
 module "db" {
   source = "terraform-aws-modules/rds/aws"
 
@@ -94,7 +94,7 @@ module "db" {
 
   # DB subnet group
   create_db_subnet_group = true
-  subnet_ids             = ["subnet-12345678", "subnet-87654321"]
+  subnet_ids             = [dynamic_subnets.private_subnet_ids[0],dynamic_subnets.private_subnet_ids[1], dynamic_subnets.private_subnet_ids[2]]
 
   # DB parameter group
   family = "mysql5.7"
@@ -103,7 +103,7 @@ module "db" {
   major_engine_version = "5.7"
 
   # Database Deletion Protection
-  deletion_protection = true
+  deletion_protection = false
 
   parameters = [
     {
@@ -133,4 +133,4 @@ module "db" {
     },
   ]
 }
-*/
+
