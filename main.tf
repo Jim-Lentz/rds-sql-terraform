@@ -1,4 +1,4 @@
-terraform {
+/*terraform {
   required_version = "~> 1.8.0"
 
   required_providers {
@@ -18,7 +18,7 @@ terraform {
 provider "aws" {
   region = "us-west-2" # Change to your desired region
 }
-
+*/
 
 module "vpc" {
   source = "cloudposse/vpc/aws"

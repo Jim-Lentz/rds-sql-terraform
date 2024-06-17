@@ -1,7 +1,7 @@
 #
 # Create network resources
 #
-module "vpc" {
+module "dms_vpc" {
   source = "cloudposse/vpc/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
@@ -14,7 +14,7 @@ module "vpc" {
   assign_generated_ipv6_cidr_block = false
 }
 
-module "dynamic_subnets" {
+module "dms_subnets" {
   source = "cloudposse/dynamic-subnets/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
@@ -22,8 +22,8 @@ module "dynamic_subnets" {
   stage              = "test"
   name               = "app"
   availability_zones = ["us-west-2a","us-west-2b","us-west-2c"]
-  vpc_id             = module.vpc.vpc_id
-  igw_id             = [module.vpc.igw_id]
+  vpc_id             = module.dms_vpc.vpc_id
+  igw_id             = [module.dms_vpc.igw_id]
   ipv4_cidr_block    = ["10.1.0.0/16"]
   nat_gateway_enabled = false
 }
@@ -31,7 +31,7 @@ module "dynamic_subnets" {
 resource "aws_security_group" "sql_instance" {
   name        = "sql_instance"
   description = "Allow inbound traffic for SQL and SSH and all outbound traffic"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = module.dms_vpc.vpc_id
 
   tags = {
     Name = "allow_traffic"
@@ -40,7 +40,7 @@ resource "aws_security_group" "sql_instance" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_sql" {
   security_group_id = aws_security_group.sql_instance.id
-  cidr_ipv4         = module.vpc.cidr_block
+  cidr_ipv4         = module.dms_vpc.vpc_cidr_block
   from_port         = 1433
   ip_protocol       = "tcp"
   to_port           = 1433
@@ -48,7 +48,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_sql" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_rds" {
   security_group_id = aws_security_group.sql_instance.id
-  cidr_ipv4         = module.vpc.cidr_block
+  cidr_ipv4         = module.dms_vpc.vpc_cidr_block
   from_port         = 3389
   ip_protocol       = "tcp"
   to_port           = 3389
@@ -61,6 +61,19 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
 }
 
 
+module "ssh_key_pair" {
+  source = "cloudposse/key-pair/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
+  namespace             = "eg"
+  stage                 = "prod"
+  name                  = "app"
+  ssh_public_key_path   = "/secrets"
+  generate_ssh_key      = "true"
+  private_key_extension = ".pem"
+  public_key_extension  = ".pub"
+}
+
 #
 # Create a SQL Server instance
 #
@@ -69,12 +82,12 @@ module "sql_instance" {
   source = "cloudposse/ec2-instance/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
-  ssh_key_pair                = var.ssh_key_pair
-  vpc_id                      = module.vpc.vpc_id #var.vpc_id
-  security_groups             = aws_security_group.sql_instance.id
-  subnet                      = module.dynamic_subnets.subnet_ids[0]
+  ssh_key_pair                = module.ssh_key_pair.key_name
+  vpc_id                      = module.dms_vpc.vpc_id #var.vpc_id
+  security_groups             = [aws_security_group.sql_instance.id]
+  subnet                      = module.dms_subnets.private_subnet_ids[0]
   associate_public_ip_address = false
-  name                        = "sql-instance"
+  name                        = "sqlserver"
   namespace                   = "eg"
   stage                       = "dev"
   additional_ips_count        = 1
@@ -126,7 +139,7 @@ module "database_migration_service" {
   # Subnet group
   repl_subnet_group_name        = "dms-subnet-group"
   repl_subnet_group_description = "DMS Subnet group"
-  repl_subnet_group_subnet_ids  = [module.dynamic_subnets.private_subnet_ids[0], module.dynamic_subnets.private_subnet_ids[1], module.dynamic_subnets.private_subnet_ids[2]]
+  repl_subnet_group_subnet_ids  = [module.dms_subnets.private_subnet_ids[0], module.dms_subnets.private_subnet_ids[1], module.dms_subnets.private_subnet_ids[2]]
 
   # Instance
   repl_instance_allocated_storage            = 64
@@ -139,14 +152,14 @@ module "database_migration_service" {
   repl_instance_publicly_accessible          = false
   repl_instance_class                        = "dms.t3.large"
   repl_instance_id                           = "dms-instance"
-  repl_instance_vpc_security_group_ids       = ["sg-12345678"] # still need to figure out
+  repl_instance_vpc_security_group_ids       = [aws_security_group.sql_instance.id] #["sg-12345678"] # still need to figure out
 
   endpoints = {
     source = {
       database_name               = "sql-instance"
       endpoint_id                 = "sql-source"
       endpoint_type               = "source"
-      engine_name                 = "mssql"
+      engine_name                 = "sqlserver"
       extra_connection_attributes = "heartbeatFrequency=1;"
       username                    = "dms_migration"
       password                    = "youShouldPickABetterPassword123!"
@@ -160,16 +173,17 @@ module "database_migration_service" {
       database_name = "sql-rds"
       endpoint_id   = "sql-destination"
       endpoint_type = "target"
-      engine_name   = "mssql"
+      engine_name   = "sqlserver"
       username      = "dms_migration"
       password      = "passwordsDoNotNeedToMatch789?"
       port          = 1433
-      server_name   = module.db.db_name # "dms-ex-dest.cluster-abcdefghijkl.us-east-1.rds.amazonaws.com"
+      server_name   = module.db.db_instance_name # "dms-ex-dest.cluster-abcdefghijkl.us-east-1.rds.amazonaws.com"
       ssl_mode      = "none"
       tags          = { EndpointType = "destination" }
     }
   }
 
+/* removed during testing - need the json files
   replication_tasks = {
     cdc_ex = {
       replication_task_id       = "example-cdc"
@@ -181,6 +195,8 @@ module "database_migration_service" {
       tags                      = { Task = "SQL to RDS SQL" }
     }
   }
+*/
+
 /* removed during testing
   event_subscriptions = {
     instance = {
