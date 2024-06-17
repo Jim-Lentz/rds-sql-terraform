@@ -1,5 +1,4 @@
-/*terraform {
-  # This version should match what's configured in ops-meta.yaml
+terraform {
   required_version = "~> 1.8.0"
 
   required_providers {
@@ -15,4 +14,3 @@
     }
   }
 }
-*/
