@@ -30,7 +30,7 @@ module "dms_subnets" {
 
 resource "aws_security_group" "sql_instance" {
   name        = "sql_instance"
-  description = "Allow inbound traffic for SQL and SSH and all outbound traffic"
+  description = "Allow inbound traffic for SQL and rdp from Jim's IP and all outbound traffic"
   vpc_id      = module.dms_vpc.vpc_id
 
   tags = {
@@ -48,7 +48,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_sql" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_rds" {
   security_group_id = aws_security_group.sql_instance.id
-  cidr_ipv4         = module.dms_vpc.vpc_cidr_block
+  cidr_ipv4         = "4.42.1.190"
   from_port         = 3389
   ip_protocol       = "tcp"
   to_port           = 3389
@@ -85,7 +85,7 @@ module "sql_instance" {
   ssh_key_pair                = module.ssh_key_pair.key_name
   vpc_id                      = module.dms_vpc.vpc_id #var.vpc_id
   security_groups             = [aws_security_group.sql_instance.id]
-  subnet                      = module.dms_subnets.private_subnet_ids[0]
+  subnet                      = module.dms_subnets.public_subnet_ids[0]
   associate_public_ip_address = true
   name                        = "sqlserver"
   namespace                   = "dms"
