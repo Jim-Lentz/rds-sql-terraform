@@ -90,6 +90,8 @@ module "sql_instance" {
   name                        = "sqlserver"
   namespace                   = "eg"
   stage                       = "dev"
+  instance_type               = "t3.xlarge"
+  ami                         = "ami-0b67457830f2570dc"
   additional_ips_count        = 1
   ebs_volume_count            = 1
  /* security_group_rules = [
