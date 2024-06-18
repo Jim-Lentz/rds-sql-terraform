@@ -48,7 +48,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_sql" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_rds" {
   security_group_id = aws_security_group.sql_instance.id
-  cidr_ipv4         = "4.42.1.190"
+  cidr_ipv4         = "4.42.1.190/32" # Jim's IP
   from_port         = 3389
   ip_protocol       = "tcp"
   to_port           = 3389
