@@ -5,7 +5,7 @@ module "dms_vpc" {
   source = "cloudposse/vpc/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
-  namespace = "eg"
+  namespace = "dms"
   stage     = "test"
   name      = "app"
 
@@ -18,7 +18,7 @@ module "dms_subnets" {
   source = "cloudposse/dynamic-subnets/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
-  namespace          = "eg"
+  namespace          = "dms"
   stage              = "test"
   name               = "app"
   availability_zones = ["us-west-2a","us-west-2b","us-west-2c"]
@@ -65,7 +65,7 @@ module "ssh_key_pair" {
   source = "cloudposse/key-pair/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
-  namespace             = "eg"
+  namespace             = "dms"
   stage                 = "prod"
   name                  = "app"
   ssh_public_key_path   = "/secrets"
@@ -86,9 +86,9 @@ module "sql_instance" {
   vpc_id                      = module.dms_vpc.vpc_id #var.vpc_id
   security_groups             = [aws_security_group.sql_instance.id]
   subnet                      = module.dms_subnets.private_subnet_ids[0]
-  associate_public_ip_address = false
+  associate_public_ip_address = true
   name                        = "sqlserver"
-  namespace                   = "eg"
+  namespace                   = "dms"
   stage                       = "dev"
   instance_type               = "t3.xlarge"
   ami                         = "ami-0b67457830f2570dc"
