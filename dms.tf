@@ -91,49 +91,12 @@ module "sql_instance" {
   namespace                   = "dms"
   stage                       = "dev"
   instance_type               = "t3.xlarge"
-  ami                         = "ami-0b67457830f2570dc"
+  ami                         = "ami-063a7564f0b0e59f0" # "ami-0b67457830f2570dc"
   root_volume_size            = 100
   ebs_volume_size             = 100
   additional_ips_count        = 1
   ebs_volume_count            = 1
- /* security_group_rules = [
-    {
-      type        = "egress"
-      from_port   = 0
-      to_port     = 65535
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      type        = "ingress"
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      type        = "ingress"
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      type        = "ingress"
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      type        = "ingress"
-      from_port   = 53
-      to_port     = 53
-      protocol    = "udp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-  ]
-  */
+ 
 }
 
 module "database_migration_service" {
@@ -165,8 +128,8 @@ module "database_migration_service" {
       endpoint_type               = "source"
       engine_name                 = "sqlserver"
       extra_connection_attributes = "heartbeatFrequency=1;"
-      username                    = "dms_migration"
-      password                    = "youShouldPickABetterPassword123!"
+      username                    = "dmscollect"
+      password                    = var.sqlPassword 
       port                        = 1433
       server_name                 = module.sql_instance.name #"dms-ex-src.cluster-abcdefghijkl.us-east-1.rds.amazonaws.com"
       ssl_mode                    = "none"

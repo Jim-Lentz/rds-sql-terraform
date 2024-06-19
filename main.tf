@@ -1,24 +1,3 @@
-/*terraform {
-  required_version = "~> 1.8.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.37.0"
-    }
-  }
-  cloud {
-    organization = "TerraformBootCampJimLentzNew"
-    workspaces {
-      name = "rds-sql-terraform"
-    }
-  }
-}
-
-provider "aws" {
-  region = "us-west-2" # Change to your desired region
-}
-*/
 
 module "vpc" {
   source = "cloudposse/vpc/aws"
@@ -123,3 +102,49 @@ module "db" {
   ]
 }
 
+# Adding an instance to manage DMS with
+
+resource "aws_security_group" "rds_management_instance" {
+  name        = "sql_instance"
+  description = "Allow inbound traffic for SQL and rdp from Jims IP and all outbound traffic"
+  vpc_id      = module.vpc.vpc_id
+
+  tags = {
+    Name = "allow_traffic"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_rds_1" {
+  security_group_id = aws_security_group.rds_management_instance.id
+  cidr_ipv4         = "4.42.1.190/32" # Jim's IP
+  from_port         = 3389
+  ip_protocol       = "tcp"
+  to_port           = 3389
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_1" {
+  security_group_id = aws_security_group.rds_management_instance.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1" # semantically equivalent to all ports
+}
+
+module "rds_management_instance" {
+  source = "cloudposse/ec2-instance/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
+  ssh_key_pair                = "jimspemkey" #module.ssh_key_pair.key_name
+  vpc_id                      = module.vpc.vpc_id #var.vpc_id
+  security_groups             = [aws_security_group.rds_management_instance.id]
+  subnet                      = module.dms_subnets.public_subnet_ids[0]
+  associate_public_ip_address = false
+  name                        = "sqlManagmentServer"
+  namespace                   = "sqp"
+  stage                       = "dev"
+  instance_type               = "t2.micro"
+  ami                         = "ami-07e278fe6c43b6aba" 
+  root_volume_size            = 100
+  ebs_volume_size             = 100
+  additional_ips_count        = 1
+  ebs_volume_count            = 1
+ 
+}
