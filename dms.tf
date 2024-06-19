@@ -30,7 +30,7 @@ module "dms_subnets" {
 
 resource "aws_security_group" "sql_instance" {
   name        = "sql_instance"
-  description = "Allow inbound traffic for SQL and rdp from Jim's IP and all outbound traffic"
+  description = "Allow inbound traffic for SQL and rdp from Jims IP and all outbound traffic"
   vpc_id      = module.dms_vpc.vpc_id
 
   tags = {
