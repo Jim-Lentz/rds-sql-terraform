@@ -82,7 +82,7 @@ module "sql_instance" {
   source = "cloudposse/ec2-instance/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
-  ssh_key_pair                = module.ssh_key_pair.key_name
+  ssh_key_pair                = "JimsKeyPair" #module.ssh_key_pair.key_name
   vpc_id                      = module.dms_vpc.vpc_id #var.vpc_id
   security_groups             = [aws_security_group.sql_instance.id]
   subnet                      = module.dms_subnets.public_subnet_ids[0]
