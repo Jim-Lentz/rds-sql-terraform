@@ -135,7 +135,7 @@ module "rds_management_instance" {
   ssh_key_pair                = "jimspemkey" #module.ssh_key_pair.key_name
   vpc_id                      = module.vpc.vpc_id #var.vpc_id
   security_groups             = [aws_security_group.rds_management_instance.id]
-  subnet                      = module.dms_subnets.public_subnet_ids[0]
+  subnet                      = module.dynamic_subnets.public_subnet_ids[0]
   associate_public_ip_address = false
   name                        = "sqlManagmentServer"
   namespace                   = "sqp"
