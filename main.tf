@@ -140,7 +140,7 @@ module "rds_management_instance" {
   name                        = "sqlManagmentServer"
   namespace                   = "sqp"
   stage                       = "dev"
-  instance_type               = "t2.micro"
+  instance_type               = "t2.large"
   ami                         = "ami-07e278fe6c43b6aba" 
   root_volume_size            = 100
   ebs_volume_size             = 100
