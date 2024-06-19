@@ -86,7 +86,7 @@ module "sql_instance" {
   vpc_id                      = module.dms_vpc.vpc_id #var.vpc_id
   security_groups             = [aws_security_group.sql_instance.id]
   subnet                      = module.dms_subnets.public_subnet_ids[0]
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   name                        = "sqlserver"
   namespace                   = "dms"
   stage                       = "dev"
