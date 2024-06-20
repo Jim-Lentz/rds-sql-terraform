@@ -30,12 +30,23 @@ module "db" {
   source = "terraform-aws-modules/rds/aws"
 
   identifier = "demodb"
-
+/*
   engine            = "sqlserver-ee"
   engine_version    = "14.00.3465.1.v1"
   instance_class    = "db.m5.large"
   family            = "sqlserver-ee-14.00"
   major_engine_version = "14.00"
+  */
+
+  # testing with this setup to see if it will work
+  engine               = "sqlserver-ex"
+  engine_version       = "15.00"
+  family               = "sqlserver-ex-15.0" # DB parameter group
+  major_engine_version = "15.00"             # DB option group
+  instance_class       = "db.t3.large"
+
+# End testing block
+
   allocated_storage = 5
   create_db_parameter_group = false # added as a test to see if it would work
   license_model             = "license-included"
