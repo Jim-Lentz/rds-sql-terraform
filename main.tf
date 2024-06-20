@@ -34,7 +34,7 @@ module "db" {
   engine            = "sqlserver-ee"
   engine_version    = "14.00.3465.1.v1"
   instance_class    = "db.m5.large"
-  family            = "sqlserver-ee-14.0"
+  family            = "sqlserver-ee-14.00"
   major_engine_version = "14.0"
   allocated_storage = 5
   
