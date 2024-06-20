@@ -31,14 +31,16 @@ module "db" {
 
   identifier = "demodb"
 
-  engine            = "mysql"
-  engine_version    = "5.7"
+  engine            = "sqlserver-ee"
+  engine_version    = "14.00.3465.1.v1"
   instance_class    = "db.m5.large"
+  family            = "sqlserver-ee-14.0"
+  major_engine_version = "14.0"
   allocated_storage = 5
-
+  
   db_name  = "demodb"
   username = "user"
-  port     = "3306"
+  port     = "1433"
 
   skip_final_snapshot = true
 
@@ -64,6 +66,8 @@ module "db" {
   create_db_subnet_group = true
   subnet_ids             = [module.dynamic_subnets.private_subnet_ids[0], module.dynamic_subnets.private_subnet_ids[1], module.dynamic_subnets.private_subnet_ids[2]] #[module.dynamic_subnets.private[0], module.dynamic_subnets.private[1], module.dynamic_subnets.private[2]]
 
+  
+/* Removing for testing. This will need to be changed for SQL if it is needed
   # DB parameter group
   family = "mysql5.7"
 
@@ -100,6 +104,7 @@ module "db" {
       ]
     },
   ]
+  */
 }
 
 # Adding an instance to manage DMS with
@@ -134,17 +139,16 @@ module "rds_management_instance" {
   # version     = "x.x.x"
   ssh_key_pair                = "jimspemkey" #module.ssh_key_pair.key_name
   vpc_id                      = module.vpc.vpc_id #var.vpc_id
-  security_groups             = [aws_security_group.rds_management_instance.id]
+  security_groups             = [aws_security_group.rds_management_instance.id, module.vpc.vpc_default_security_group_id]
   subnet                      = module.dynamic_subnets.public_subnet_ids[0]
   associate_public_ip_address = false
-  name                        = "sqlManagmentServer"
-  namespace                   = "sqp"
+  name                        = "RdsManagmentServer"
+  namespace                   = "sql"
   stage                       = "dev"
   instance_type               = "t3.xlarge"
-  ami                         = "ami-07e278fe6c43b6aba" 
+  ami                         = "ami-0fc134ad9955f3e08" # custome AMI with SQL tools installed
   root_volume_size            = 100
   ebs_volume_size             = 100
   additional_ips_count        = 1
   ebs_volume_count            = 1
- 
 }
