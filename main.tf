@@ -52,7 +52,7 @@ module "db" {
   create_db_parameter_group = false # added as a test to see if it would work
   license_model             = "license-included"
  # db_name  = "demodb" # trying null for testing 
-  username = "user"
+  # username = "user"
   port     = "1433"
 
   skip_final_snapshot = true
