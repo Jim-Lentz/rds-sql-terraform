@@ -1,3 +1,19 @@
+data "aws_availability_zones" "available" {}
+
+locals {
+  name    = "complete-mssql"
+  region  = "us-west-2"
+  #region2 = "eu-central-1"
+
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  tags = {
+    Name       = local.name
+    Example    = local.name
+    Repository = "https://github.com/terraform-aws-modules/terraform-aws-rds"
+  }
+}
 
 module "vpc" {
   source = "cloudposse/vpc/aws"
@@ -52,7 +68,7 @@ module "db" {
   create_db_parameter_group = false # added as a test to see if it would work
   license_model             = "license-included"
  # db_name  = "demodb" # trying null for testing 
-  username = "user"
+  username = "user123"
   port     = "1433"
 
   domain               = aws_directory_service_directory.demo.id
