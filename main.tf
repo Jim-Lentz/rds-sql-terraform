@@ -55,6 +55,9 @@ module "db" {
   username = "user"
   port     = "1433"
 
+  domain               = aws_directory_service_directory.demo.id
+  domain_iam_role_name = aws_iam_role.rds_ad_auth.name
+
   skip_final_snapshot = true
 
   iam_database_authentication_enabled = true
