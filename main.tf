@@ -37,7 +37,7 @@ module "db" {
   family            = "sqlserver-ee-14.00"
   major_engine_version = "14.00"
   allocated_storage = 5
-  
+  create_db_parameter_group = false # added as a test to see if it would work
   db_name  = "demodb"
   username = "user"
   port     = "1433"
