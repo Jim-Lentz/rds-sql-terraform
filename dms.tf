@@ -144,7 +144,7 @@ module "database_migration_service" {
       username      = "dms_migration"
       password      = "passwordsDoNotNeedToMatch789?"
       port          = 1433
-      server_name   = module.db.db_instance_name # "dms-ex-dest.cluster-abcdefghijkl.us-east-1.rds.amazonaws.com"
+      server_name   = module.db.db_instance_endpoint #Need to use the endpoint for RDS. Not the name db_instance_name # "dms-ex-dest.cluster-abcdefghijkl.us-east-1.rds.amazonaws.com"
       ssl_mode      = "none"
       tags          = { EndpointType = "destination" }
     }
