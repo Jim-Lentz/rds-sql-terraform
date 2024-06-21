@@ -64,7 +64,9 @@ module "db" {
 
 # End testing block
 
-  allocated_storage = 5
+  allocated_storage = 10
+  storage_type = "gp3"
+  
   create_db_parameter_group = false # added as a test to see if it would work
   license_model             = "license-included"
  # db_name  = "demodb" # trying null for testing 
