@@ -64,7 +64,7 @@ module "db" {
 
 # End testing block
 
-  allocated_storage = 10
+  allocated_storage = 40
   storage_type = "gp3"
   
   create_db_parameter_group = false # added as a test to see if it would work
