@@ -78,7 +78,7 @@ module "db" {
 
   skip_final_snapshot = true
 
-  iam_database_authentication_enabled = true
+  iam_database_authentication_enabled = false #true
 
   vpc_security_group_ids = [module.vpc.vpc_default_security_group_id] #["sg-090ba5281c5a9b4db"]
 
