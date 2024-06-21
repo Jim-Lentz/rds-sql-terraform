@@ -182,9 +182,9 @@ module "rds_management_instance" {
   instance_type               = "t3.xlarge"
   ami                         = "ami-0fc134ad9955f3e08" # custome AMI with SQL tools installed
   root_volume_size            = 100
-  ebs_volume_size             = 100
+  #ebs_volume_size             = 100
   additional_ips_count        = 1
-  ebs_volume_count            = 1
+  #ebs_volume_count            = 1
 }
 
 ################################################################################

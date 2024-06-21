@@ -93,9 +93,9 @@ module "sql_instance" {
   instance_type               = "t3.xlarge"
   ami                         = "ami-063a7564f0b0e59f0" # "ami-0b67457830f2570dc"
   root_volume_size            = 100
-  ebs_volume_size             = 100
+  #ebs_volume_size             = 100
   additional_ips_count        = 1
-  ebs_volume_count            = 1
+  #ebs_volume_count            = 1
  
 }
 
